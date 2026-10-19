@@ -1,9 +1,9 @@
-2026-10-19 08:02:29,053 | INFO | === Project Nexus | Phase 1 ingestion start ===
-2026-10-19 08:02:29,150 | INFO | Raw extract written: raw_transaction_logs.csv (2,550 rows)
-2026-10-19 08:02:29,151 | INFO | Parsing 2,550 raw log lines
-2026-10-19 08:02:29,486 | INFO | Data contract checks passed
-2026-10-19 08:02:29,509 | INFO | Clean rows:       2,122 -> data\processed\clean_crm_migration.csv
-2026-10-19 08:02:29,509 | INFO | Quarantined rows: 428 -> data\quarantine\rejected_records.csv
-2026-10-19 08:02:29,509 | INFO | Pipeline pass rate: 83.2%
-2026-10-19 08:02:29,509 | INFO | Pipeline value: £594,041.68 | Closed-Lost leakage: £215,175.92 (36.2%)
-2026-10-19 08:02:29,519 | INFO | === Phase 1 complete ===
+2026-10-19 08:27:03,852 | INFO | === Project Nexus | Phase 1 ingestion start ===
+2026-10-19 08:27:04,235 | INFO | Raw extract written: raw_transaction_logs.csv (5,100 rows)
+2026-10-19 08:27:04,236 | INFO | Parsing 5,100 raw log lines
+2026-10-19 08:27:05,104 | INFO | Data contract checks passed
+2026-10-19 08:27:05,190 | INFO | Clean rows:       4,274 -> data\processed\clean_crm_migration.csv
+2026-10-19 08:27:05,190 | INFO | Quarantined rows: 826 -> data\quarantine\rejected_records.csv
+2026-10-19 08:27:05,190 | INFO | Pipeline pass rate: 83.8%
+2026-10-19 08:27:05,190 | INFO | Pipeline value: £1,178,155.39 | Closed-Lost leakage: £424,692.27 (36.0%)
+2026-10-19 08:27:05,203 | INFO | === Phase 1 complete ===

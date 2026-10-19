@@ -1,5 +1,5 @@
 Friction_Driver,Closed_Lost_Deals,Closed_Lost_Revenue_GBP,Avg_Lost_Deal_GBP,Share_Of_Leakage_Pct,Avg_Response_Hours
-Response Delay,294,87276.93,296.86,40.6,88.6
-Warehouse Stockout,224,59229.07,264.42,27.5,
-Navigation Friction,205,60717.67,296.18,28.2,
-Unattributed,27,7952.25,294.53,3.7,
+Response Delay,568,161266.2,283.92,38.0,86.4
+Warehouse Stockout,449,128209.14,285.54,30.2,
+Navigation Friction,409,120788.23,295.33,28.4,
+Unattributed,54,14428.7,267.2,3.4,

@@ -3,7 +3,7 @@ Project Nexus | Phase 1: Python Ingestion Engine
 Harrize Consulting | UK E-Commerce Revenue Leakage & CRM Ingestion Pipeline
 
 What this does
-  1. Simulates 2,500 chaotic raw transaction log strings (mixed date formats,
+  1. Simulates 5000 chaotic raw transaction log strings (mixed date formats,
      messy currency, missing fields, inconsistent casing, corrupted rows).
   2. Parses every string with Regex into structured fields.
   3. Enforces enterprise type casting:
@@ -46,7 +46,7 @@ RAW_FILE = RAW_DIR / "raw_transaction_logs.csv"
 CLEAN_FILE = PROCESSED_DIR / "clean_crm_migration.csv"
 REJECT_FILE = QUARANTINE_DIR / "rejected_records.csv"
 
-N_RECORDS = 2500
+N_RECORDS = 5000
 SEED = 42
 RESPONSE_SLA_HOURS = 24  # replies slower than this count as Response Delay
 
