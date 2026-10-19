@@ -1,0 +1,9 @@
+2026-10-19 08:02:29,053 | INFO | === Project Nexus | Phase 1 ingestion start ===
+2026-10-19 08:02:29,150 | INFO | Raw extract written: raw_transaction_logs.csv (2,550 rows)
+2026-10-19 08:02:29,151 | INFO | Parsing 2,550 raw log lines
+2026-10-19 08:02:29,486 | INFO | Data contract checks passed
+2026-10-19 08:02:29,509 | INFO | Clean rows:       2,122 -> data\processed\clean_crm_migration.csv
+2026-10-19 08:02:29,509 | INFO | Quarantined rows: 428 -> data\quarantine\rejected_records.csv
+2026-10-19 08:02:29,509 | INFO | Pipeline pass rate: 83.2%
+2026-10-19 08:02:29,509 | INFO | Pipeline value: £594,041.68 | Closed-Lost leakage: £215,175.92 (36.2%)
+2026-10-19 08:02:29,519 | INFO | === Phase 1 complete ===

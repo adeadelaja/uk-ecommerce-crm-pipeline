@@ -1,0 +1,11 @@
+Hygiene_Check,Failing_Rows,Failing_Pct,Status
+Blank interaction note,262,12.35,FAIL
+Missing response time,178,8.39,FAIL
+"Stage inferred, not recorded in CRM",41,1.93,WARN
+Closed-Lost with no friction attribution,27,1.27,WARN
+"Suspected duplicate lead (same customer, category, day)",3,0.14,WARN
+Duplicate Transaction_ID,0,0.0,PASS
+"Suspected double post (same customer, amount, timestamp)",0,0.0,PASS
+Missing channel attribution,0,0.0,PASS
+Missing region attribution,0,0.0,PASS
+Missing product category,0,0.0,PASS
