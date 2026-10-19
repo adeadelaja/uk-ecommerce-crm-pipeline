@@ -1,0 +1,71 @@
+==============================================================================
+PROJECT NEXUS | PREFLIGHT CHECK
+Root: C:\Users\adese\uk-ecommerce-crm-pipeline
+Run:  2026-10-19 10:09:06
+==============================================================================
+
+FOLDER STRUCTURE (venv, .git and caches hidden)
+
+uk-ecommerce-crm-pipeline/
+|-- data/
+|   |-- processed/
+|   |   |-- clean_crm_migration.csv  (703 KB)
+|   |   |-- sql_1_revenue_leakage_audit.csv  (294 B)
+|   |   |-- sql_2_active_forecasting_pipeline.csv  (1 KB)
+|   |   |-- sql_3a_data_hygiene_scorecard.csv  (524 B)
+|   |   `-- sql_3b_data_hygiene_detail.csv  (46 KB)
+|   |-- quarantine/
+|   |   `-- rejected_records.csv  (220 KB)
+|   |-- raw/
+|   |   `-- raw_transaction_logs.csv  (998 KB)
+|   `-- nexus.db  (2 MB)
+|-- docs/
+|   |-- images/
+|   `-- phase3_powerbi_build_guide.md  (12 KB)
+|-- logs/
+|   |-- pipeline_run.log  (723 B)
+|   `-- preflight_report.txt  (3 KB)
+|-- powerbi/
+|   |-- ecommerce_pipeline_project.pbix  (17 KB)
+|   |-- measures.dax  (6 KB)
+|   `-- nexus_theme.json  (390 B)
+|-- sql/
+|   `-- analytical_queries.sql  (13 KB)
+|-- src/
+|   |-- db_loader.py  (2 KB)
+|   |-- pipeline_engine.py  (18 KB)
+|   `-- preflight_check.py  (15 KB)
+|-- .gitignore  (21 B)
+|-- README.md  (3 B)
+`-- requirements.txt  (3 B)
+
+READINESS CHECKS
+
+[PASS] Python version                    3.13.1 (need 3.10+)
+[PASS] Virtual environment active        C:\Users\adese\uk-ecommerce-crm-pipeline\venv
+[PASS] pandas / numpy installed          pandas 3.0.6, numpy 2.5.4
+[PASS] Required files present            All 9 found
+[PASS] UTF-8 encoding                    10 text files checked
+[PASS] Pipeline set to 5,000 records     N_RECORDS = 5000
+[PASS] Pipeline outputs exist            All 6 CSVs found
+[PASS] Clean CRM rows                    4,274 (expected 4,274)
+[PASS] Quarantined rows                  826 (expected 826)
+[PASS] Pipeline value                    GBP 1,178,155.39 (expected GBP 1,178,155.39)
+[PASS] Closed-Lost leakage               GBP 424,692.27 (expected GBP 424,692.27)
+[PASS] Hygiene scorecard rows            10 (expected 10)
+[PASS] Data newer than code              Outputs were produced after the latest code change
+[PASS] SQLite database                   uk_ecommerce_pipeline has 4,274 rows (expected 4,274)
+[PASS] Theme JSON valid                  'Harrize Nexus' with 8 colours
+[PASS] DAX measures file                 All 7 key measures found
+[PASS] Power BI report in powerbi/       ecommerce_pipeline_project.pbix
+[PASS] Power BI Desktop installed        Found
+[WARN] .gitignore rules                  Add: .venv/, data/raw/*.csv, data/processed/*.csv, data/quarantine/*.csv, __pycache__/
+[PASS] Git remote                        branch 'main' -> https://github.com/adeadelaja/uk-ecommerce-crm-pipeline.git
+[PASS] Tag checkpoint-01                 present
+[PASS] Tag checkpoint-02                 present
+[WARN] Uncommitted changes               12 file(s) changed or untracked (expected now if you just added powerbi/ and docs/ files)
+[PASS] Nothing private or bulky tracked  No venv or database files in Git
+
+==============================================================================
+READY FOR PHASE 3: 0 FAIL, 2 WARN. Review any WARN lines above.
+==============================================================================

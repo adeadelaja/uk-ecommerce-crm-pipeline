@@ -1,0 +1,160 @@
+// ============================================================================
+// Project Nexus | Phase 3: Power BI DAX Measures
+// Harrize Consulting | UK E-Commerce Revenue Leakage & CRM Ingestion Pipeline
+//
+// Tables expected in the model:
+//   FactPipeline   <- data/processed/clean_crm_migration.csv
+//   Quarantine     <- data/quarantine/rejected_records.csv (split to one row per reason)
+//   Hygiene        <- data/processed/sql_3a_data_hygiene_scorecard.csv
+//   HygieneDetail  <- data/processed/sql_3b_data_hygiene_detail.csv
+//   Calendar       <- DAX calculated table (below)
+//   _Measures      <- empty table that holds every measure
+//
+// Expected values (seed 42, no slicers applied) are noted on each measure.
+// ============================================================================
+
+
+// ---------------------------------------------------------------------------
+// CALCULATED TABLE: Calendar   (Modeling > New table)
+// Then: Table tools > Mark as date table > Date
+// Relationship: Calendar[Date] 1 -> * FactPipeline[Transaction_Date]
+// ---------------------------------------------------------------------------
+Calendar =
+ADDCOLUMNS (
+    CALENDAR ( DATE ( 2025, 1, 1 ), DATE ( 2026, 12, 31 ) ),
+    "Year", YEAR ( [Date] ),
+    "Month Num", MONTH ( [Date] ),
+    "Month Start", DATE ( YEAR ( [Date] ), MONTH ( [Date] ), 1 ),
+    "Month", FORMAT ( [Date], "mmm yyyy" ),
+    "Quarter", "Q" & QUARTER ( [Date] ) & " " & YEAR ( [Date] )
+)
+
+
+// ---------------------------------------------------------------------------
+// 1. CORE VOLUME
+// ---------------------------------------------------------------------------
+Total Pipeline £ =
+SUM ( FactPipeline[Revenue_Amount_GBP] )                          // 1,178,155.39
+
+Deal Count =
+COUNTROWS ( FactPipeline )                                        // 4,274
+
+
+// ---------------------------------------------------------------------------
+// 2. REVENUE LEAKAGE
+// ---------------------------------------------------------------------------
+Leakage £ =
+CALCULATE ( [Total Pipeline £], FactPipeline[Deal_Stage] = "Closed-Lost" )   // 424,692.27
+
+Lost Deals =
+CALCULATE ( [Deal Count], FactPipeline[Deal_Stage] = "Closed-Lost" )         // 1,480
+
+Leakage % =
+DIVIDE ( [Leakage £], [Total Pipeline £] )                        // 36.0%
+
+Leakage Share of Total % =
+DIVIDE (
+    [Leakage £],
+    CALCULATE ( [Leakage £], REMOVEFILTERS ( FactPipeline[Friction_Reason] ) )
+)                                                                 // Response Delay 38.0%
+
+Avg Lost Deal £ =
+DIVIDE ( [Leakage £], [Lost Deals] )
+
+Avg Response Hrs (Lost to Delay) =
+CALCULATE (
+    AVERAGE ( FactPipeline[Response_Time_Hours] ),
+    FactPipeline[Deal_Stage] = "Closed-Lost",
+    FactPipeline[Friction_Reason] = "Response Delay"
+)                                                                 // 86.4
+
+SLA Breach % =
+VAR Measured =
+    CALCULATE ( [Deal Count], NOT ISBLANK ( FactPipeline[Response_Time_Hours] ) )
+VAR Breached =
+    CALCULATE ( [Deal Count], FactPipeline[Response_Time_Hours] > 24 )
+RETURN
+    DIVIDE ( Breached, Measured )                                 // 18.3%
+
+
+// ---------------------------------------------------------------------------
+// 3. WHAT IF: RECOVERABLE REVENUE
+// Requires: Modeling > New parameter > Numeric range
+//   Name: Recovery Rate | Min 0 | Max 1 | Increment 0.05 | Default 0.5
+//   (creates table 'Recovery Rate' with measure [Recovery Rate Value])
+// ---------------------------------------------------------------------------
+Response Delay Leakage £ =
+CALCULATE ( [Leakage £], FactPipeline[Friction_Reason] = "Response Delay" )  // 161,266.20
+
+Recoverable Revenue £ =
+[Response Delay Leakage £] * [Recovery Rate Value]                // at 50%: 80,633.10
+
+
+// ---------------------------------------------------------------------------
+// 4. PIPELINE AND FORECAST
+// Stage probability and friction penalties mirror sql/analytical_queries.sql
+// ---------------------------------------------------------------------------
+Won Revenue £ =
+CALCULATE ( [Total Pipeline £], FactPipeline[Deal_Stage] = "Closed-Won" )    // 554,166.93
+
+Open Pipeline £ =
+CALCULATE ( [Total Pipeline £], FactPipeline[Deal_Stage] = "Open" )          // 199,296.19
+
+Open Deals =
+CALCULATE ( [Deal Count], FactPipeline[Deal_Stage] = "Open" )                // 766
+
+Weighted Open £ =
+SUMX (
+    FILTER ( FactPipeline, FactPipeline[Deal_Stage] = "Open" ),
+    FactPipeline[Revenue_Amount_GBP] * 0.40
+        * SWITCH (
+            FactPipeline[Friction_Reason],
+            "Response Delay", 0.50,
+            "Warehouse Stockout", 0.40,
+            "Navigation Friction", 0.60,
+            1.00
+        )
+)                                                                 // 74,472.32
+
+Expected Revenue £ =
+[Won Revenue £] + [Weighted Open £]                               // 628,639.25
+
+Open Deals At Risk =
+CALCULATE (
+    [Open Deals],
+    FactPipeline[Friction_Reason]
+        IN { "Response Delay", "Warehouse Stockout", "Navigation Friction" }
+)                                                                 // 115
+
+Win Rate % =
+VAR Won = CALCULATE ( [Deal Count], FactPipeline[Deal_Stage] = "Closed-Won" )
+VAR Lost = [Lost Deals]
+RETURN
+    DIVIDE ( Won, Won + Lost )                                    // 57.8%
+
+
+// ---------------------------------------------------------------------------
+// 5. DATA QUALITY
+// ---------------------------------------------------------------------------
+Quarantined Records =
+DISTINCTCOUNT ( Quarantine[Record_ID] )                           // 826
+
+Rejection Reason Count =
+COUNTROWS ( Quarantine )                                          // per reason, e.g. UNPARSEABLE_REVENUE 365
+
+Pipeline Pass Rate % =
+VAR CleanRows = CALCULATE ( [Deal Count], REMOVEFILTERS () )
+VAR Rejected  = CALCULATE ( [Quarantined Records], REMOVEFILTERS () )
+RETURN
+    DIVIDE ( CleanRows, CleanRows + Rejected )                    // 83.8%
+
+Hygiene Checks Failing =
+CALCULATE ( COUNTROWS ( Hygiene ), Hygiene[Status] = "FAIL" )     // 2
+
+Hygiene Status Colour =
+SWITCH (
+    SELECTEDVALUE ( Hygiene[Status] ),
+    "PASS", "#2E7D32",
+    "WARN", "#ED8B00",
+    "FAIL", "#C62828"
+)

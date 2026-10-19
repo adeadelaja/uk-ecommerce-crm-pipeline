@@ -1,0 +1,22 @@
+{
+  "name": "Harrize Nexus",
+  "dataColors": [
+    "#5B6770",
+    "#C62828",
+    "#9AA5AD",
+    "#2F3B44",
+    "#D9A441",
+    "#7E8C96",
+    "#C9D1D6",
+    "#3E7CB1"
+  ],
+  "background": "#FFFFFF",
+  "foreground": "#1F2A30",
+  "tableAccent": "#C62828",
+  "good": "#2E7D32",
+  "neutral": "#ED8B00",
+  "bad": "#C62828",
+  "maximum": "#C62828",
+  "center": "#F2C4C4",
+  "minimum": "#FFFFFF"
+}
